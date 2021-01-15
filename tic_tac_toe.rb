@@ -1,4 +1,6 @@
 class TicTacToe
+  @@current_mark = 1
+  @@marks = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   def initialize(); end
 
   def begin
@@ -29,28 +31,27 @@ class TicTacToe
   end
 
   def play_game(player_one, player_two, turn)
-    won = false
-
-    marks = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    until won == true
+    start_turn = turn
+    @@marks = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    loop do
       if(turn == 'x')
-        put_board(marks)
+        put_board()
 
         puts "Where would you like to move, #{player_one}?"
         player_one_move = gets.chomp.to_i
-        while player_one_move.between?(1, 9) == false || marks[player_one_move - 1] == 'x' || marks[player_one_move - 1] == 'o'
-          put_board(marks)
+        while player_one_move.between?(1, 9) == false || @@marks[player_one_move - 1] == 'x' || @@marks[player_one_move - 1] == 'o'
+          put_board()
           puts 'That is not a valid square'
           player_one_move = gets.chomp.to_i
         end
         
-        marks[player_one_move - 1] = 'x'
+        @@marks[player_one_move - 1] = 'x'
 
-
-        if check_board_for_win(marks, 'x')
-          if turn == 'x'
+        @@current_mark = 'x'
+        if check_board_for_win()
+          if start_turn == 'x'
             puts "#{player_one} wins!"
-          elsif turn == 'o'
+          elsif start_turn == 'o'
             puts "#{player_two} wins!"
           end
 
@@ -70,23 +71,23 @@ class TicTacToe
         turn = 'o'
       end
       if(turn == 'o')
-        put_board(marks)
+        put_board()
 
         puts "Where would you like to move, #{player_two}?"
         player_one_move = gets.chomp.to_i
-        while player_one_move.between?(1, 9) == false || marks[player_one_move - 1] == 'x' || marks[player_one_move - 1] == 'o'
-          put_board(marks)
+        while player_one_move.between?(1, 9) == false || @@marks[player_one_move - 1] == 'x' || @@marks[player_one_move - 1] == 'o'
+          put_board()
           puts 'That is not a valid square'
           player_one_move = gets.chomp.to_i
         end
         
-        marks[player_one_move - 1] = 'o'
-
-        if check_board_for_win(marks, 'o')
-          if turn == 'o'
-            puts "#{player_one} wins!"
-          elsif turn == 'x'
-            puts "#{player_two} wins!"
+        @@marks[player_one_move - 1] = 'o'
+        @@current_mark = 'o'
+        if check_board_for_win()
+          if start_turn == 'o'
+            puts "#{player_one} wins 3!"
+          elsif start_turn == 'x'
+            puts "#{player_two} wins 4!"
           end
 
           puts "Play again? y/n"
@@ -108,31 +109,31 @@ class TicTacToe
     
   end
 
-  def put_board(marks)
+  def put_board()
 
     puts
-    puts "  #{marks[0]}  |  #{marks[1]}  |  #{marks[2]}  "
+    puts "  #{@@marks[0]}  |  #{@@marks[1]}  |  #{@@marks[2]}  "
     puts '_________________'
     puts
-    puts "  #{marks[3]}  |  #{marks[4]}  |  #{marks[5]}  "
+    puts "  #{@@marks[3]}  |  #{@@marks[4]}  |  #{@@marks[5]}  "
     puts '_________________'
     puts
-    puts "  #{marks[6]}  |  #{marks[7]}  |  #{marks[8]}  "
+    puts "  #{@@marks[6]}  |  #{@@marks[7]}  |  #{@@marks[8]}  "
     puts
   end
 
-  def check_board_for_win(marks, current_mark)
-    if check_line_for_win(0, 1, 2, marks, current_mark) || check_line_for_win(3, 4, 5, marks, current_mark) ||
-        check_line_for_win(6, 7, 8, marks, current_mark) || check_line_for_win(0, 3, 6, marks, current_mark) || check_line_for_win(1, 4, 7, marks, current_mark) ||
-        check_line_for_win(2, 5, 8, marks, current_mark) || check_line_for_win(0, 4, 8, marks, current_mark) || check_line_for_win(2, 4, 6, marks, current_mark)
-      put_board(marks)
+  def check_board_for_win()
+    if check_line_for_win(0, 1, 2) || check_line_for_win(3, 4, 5) ||
+        check_line_for_win(6, 7, 8) || check_line_for_win(0, 3, 6) || check_line_for_win(1, 4, 7) ||
+        check_line_for_win(2, 5, 8) || check_line_for_win(0, 4, 8) || check_line_for_win(2, 4, 6)
+      put_board()
       return true
     end
 
   end
 
-  def check_line_for_win(one, two, three, marks, current_mark)
-    return true if marks[one] == current_mark && marks[two] == current_mark && marks[three] == current_mark
+  def check_line_for_win(one, two, three)
+    return true if @@marks[one] == @@current_mark && @@marks[two] == @@current_mark && @@marks[three] == @@current_mark
   end
 end
 
