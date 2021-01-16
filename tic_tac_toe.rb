@@ -31,86 +31,67 @@ class TicTacToe
   end
 
   def play_game(player_one, player_two, turn)
-    start_turn = turn
+    @@current_mark = turn
+    current_player = case turn
+                     when 'x'
+                       player_one
+                     when 'o'
+                       player_two
+                     end
+
     @@marks = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     loop do
-      if(turn == 'x')
-        put_board()
-
-        puts "Where would you like to move, #{player_one}?"
-        player_one_move = gets.chomp.to_i
-        while player_one_move.between?(1, 9) == false || @@marks[player_one_move - 1] == 'x' || @@marks[player_one_move - 1] == 'o'
-          put_board()
-          puts 'That is not a valid square'
-          player_one_move = gets.chomp.to_i
-        end
-        
-        @@marks[player_one_move - 1] = 'x'
-
-        @@current_mark = 'x'
-        if check_board_for_win()
-          if start_turn == 'x'
-            puts "#{player_one} wins!"
-          elsif start_turn == 'o'
-            puts "#{player_two} wins!"
-          end
-
-          puts "Play again? y/n"
-          play_again = gets.chomp.downcase
-          until play_again == 'y' || play_again == 'n'
-            puts "#{play_again} is not y or n"
-            play_again = gets.chomp.downcase
-          end
-          if play_again == 'y'
-            TicTacToe.new.begin
-          elsif play_again == 'n'
-            puts "Goodbye!"
-            exit
-          end
-        end
-        turn = 'o'
+      put_board
+      puts "Where would you like to move, #{current_player}?"
+      current_move = gets.chomp.to_i
+      while current_move.between?(1, 9) == false || @@marks[current_move - 1] == 'x' || @@marks[current_move - 1] == 'o'
+        put_board
+        puts 'That is not a valid square'
+        current_move = gets.chomp.to_i
       end
-      if(turn == 'o')
-        put_board()
+      
+      @@marks[current_move - 1] = @@current_mark
 
-        puts "Where would you like to move, #{player_two}?"
-        player_one_move = gets.chomp.to_i
-        while player_one_move.between?(1, 9) == false || @@marks[player_one_move - 1] == 'x' || @@marks[player_one_move - 1] == 'o'
-          put_board()
-          puts 'That is not a valid square'
-          player_one_move = gets.chomp.to_i
+      if check_board_for_win
+        case turn
+        when 'x'
+          puts "#{player_one} wins!"
+        when 'o'
+          puts "#{player_two} wins!"
         end
-        
-        @@marks[player_one_move - 1] = 'o'
-        @@current_mark = 'o'
-        if check_board_for_win()
-          if start_turn == 'o'
-            puts "#{player_one} wins 3!"
-          elsif start_turn == 'x'
-            puts "#{player_two} wins 4!"
-          end
 
-          puts "Play again? y/n"
+        puts 'Play again? y/n'
+        play_again = gets.chomp.downcase
+        until play_again == 'y' || play_again == 'n'
+          puts "#{play_again} is not y or n"
           play_again = gets.chomp.downcase
-          until play_again == 'y' || play_again == 'n'
-            puts "#{play_again} is not y or n"
-            play_again = gets.chomp.downcase
-          end
-          if play_again == 'y'
-            TicTacToe.new.begin
-          elsif play_again == 'n'
-            puts "Goodbye!"
-            exit
-          end
         end
-        turn = 'x'
+        case play_again
+        when 'y'
+          TicTacToe.new.begin
+        when 'n'
+          puts 'Goodbye!'
+          exit
+        end
       end
+
+      @@current_mark = case @@current_mark
+                       when 'x'
+                         'o'
+                       when 'o'
+                         'x'
+                       end
+
+      current_player = case current_player
+                       when player_one
+                         player_two
+                       when player_two
+                         player_one
+                       end
     end
-    
   end
 
   def put_board()
-
     puts
     puts "  #{@@marks[0]}  |  #{@@marks[1]}  |  #{@@marks[2]}  "
     puts '_________________'
@@ -122,12 +103,12 @@ class TicTacToe
     puts
   end
 
-  def check_board_for_win()
+  def check_board_for_win
     if check_line_for_win(0, 1, 2) || check_line_for_win(3, 4, 5) ||
-        check_line_for_win(6, 7, 8) || check_line_for_win(0, 3, 6) || check_line_for_win(1, 4, 7) ||
-        check_line_for_win(2, 5, 8) || check_line_for_win(0, 4, 8) || check_line_for_win(2, 4, 6)
-      put_board()
-      return true
+       check_line_for_win(6, 7, 8) || check_line_for_win(0, 3, 6) || check_line_for_win(1, 4, 7) ||
+       check_line_for_win(2, 5, 8) || check_line_for_win(0, 4, 8) || check_line_for_win(2, 4, 6)
+      put_board
+      true
     end
 
   end
